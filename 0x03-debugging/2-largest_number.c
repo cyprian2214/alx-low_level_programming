@@ -1,5 +1,8 @@
 #include "main.h"
 
+/* Function prototype */
+int largest_number(int a, int b, int c);
+
 /**
  * largest_number - returns the largest of 3 numbers
  * @a: first integer
