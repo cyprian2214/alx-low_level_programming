@@ -18,5 +18,5 @@ void free_listint2(listint_t **head)
 		*head = temp;
 	}
 
-	*head = NULL;  // Setting head to NULL outside the loop
+	*head = NULL;
 }
