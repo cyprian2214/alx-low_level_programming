@@ -1,3 +1,4 @@
+#include "main.h"
 #include <elf.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -232,7 +233,7 @@ void print_entry(unsigned long int e_entry, unsigned char *e_ident)
 	if (e_ident[EI_DATA] == ELFDATA2MSB)
 	{
 		e_entry = ((e_entry << 8) & 0xFF00FF00) |
-			  ((e_entry >> 8) & 0xFF00FF);
+		          ((e_entry >> 8) & 0xFF00FF);
 		e_entry = (e_entry << 16) | (e_entry >> 16);
 	}
 
@@ -243,18 +244,18 @@ void print_entry(unsigned long int e_entry, unsigned char *e_ident)
 }
 
 /**
-  * close_elf - Closes an ELF file.
+ * close_elf - Closes an ELF file.
  * @elf: The file descriptor of the ELF file.
  *
  * Description: If the file cannot be closed - exit code 98.
  */
 void close_elf(int elf)
 {
-    if (close(elf) == -1)
-    {
-        dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", elf);
-        exit(98);
-    }
+	if (close(elf) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", elf);
+		exit(98);
+	}
 }
 
 /**
@@ -270,51 +271,51 @@ void close_elf(int elf)
  */
 int main(int argc, char *argv[])
 {
-    Elf64_Ehdr *header;
-    int o, r;
+	Elf64_Ehdr *header;
+	int o, r;
 
-    if (argc != 2)
-    {
-        dprintf(STDERR_FILENO, "Usage: %s <ELF file>\n", argv[0]);
-        return (1);
-    }
+	if (argc != 2)
+	{
+		dprintf(STDERR_FILENO, "Usage: %s <ELF file>\n", argv[0]);
+		return (1);
+	}
 
-    o = open(argv[1], O_RDONLY);
-    if (o == -1)
-    {
-        dprintf(STDERR_FILENO, "Error: Can't read file %s\n", argv[1]);
-        return (98);
-    }
+	o = open(argv[1], O_RDONLY);
+	if (o == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read file %s\n", argv[1]);
+		return (98);
+	}
 
-    header = malloc(sizeof(Elf64_Ehdr));
-    if (header == NULL)
-    {
-        close_elf(o);
-        dprintf(STDERR_FILENO, "Error: Can't allocate memory\n");
-        return (98);
-    }
+	header = malloc(sizeof(Elf64_Ehdr));
+	if (header == NULL)
+	{
+		close_elf(o);
+		dprintf(STDERR_FILENO, "Error: Can't allocate memory\n");
+		return (98);
+	}
 
-    r = read(o, header, sizeof(Elf64_Ehdr));
-    if (r == -1)
-    {
-        free(header);
-        close_elf(o);
-        dprintf(STDERR_FILENO, "Error: Can't read file %s\n", argv[1]);
-        return (98);
-    }
+	r = read(o, header, sizeof(Elf64_Ehdr));
+	if (r == -1)
+	{
+		free(header);
+		close_elf(o);
+		dprintf(STDERR_FILENO, "Error: Can't read file %s\n", argv[1]);
+		return (98);
+	}
 
-    check_elf(header->e_ident);
-    printf("ELF Header:\n");
-    print_magic(header->e_ident);
-    print_class(header->e_ident);
-    print_data(header->e_ident);
-    print_version(header->e_ident);
-    print_osabi(header->e_ident);
-    print_abi(header->e_ident);
-    print_type(header->e_type, header->e_ident);
-    print_entry(header->e_entry, header->e_ident);
+	check_elf(header->e_ident);
+	printf("ELF Header:\n");
+	print_magic(header->e_ident);
+	print_class(header->e_ident);
+	print_data(header->e_ident);
+	print_version(header->e_ident);
+	print_osabi(header->e_ident);
+	print_abi(header->e_ident);
+	print_type(header->e_type, header->e_ident);
+	print_entry(header->e_entry, header->e_ident);
 
-    free(header);
-    close_elf(o);
-    return (0);
+	free(header);
+	close_elf(o);
+	return (0);
 }
