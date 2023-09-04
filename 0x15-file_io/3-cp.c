@@ -23,7 +23,7 @@ char *create_buffer(void)
     {
         dprintf(STDERR_FILENO,
                 "Error: Can't allocate memory\n");
-        exit(98);
+        exit(99);
     }
 
     return (buffer);
@@ -97,6 +97,13 @@ int copy_file(const char *file_from, const char *file_to)
     return (0);
 }
 
+/**
+ * main - Entry point of the program.
+ * @argc: The number of arguments supplied to the program.
+ * @argv: An array of pointers to the arguments.
+ *
+ * Return: 0 on success.
+ */
 int main(int argc, char *argv[])
 {
     if (argc != 3)
