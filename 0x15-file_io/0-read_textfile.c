@@ -1,40 +1,35 @@
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <string.h>
 
-ssize_t read_textfile(const char *filename, size_t letters) {
-    int fd, read_count, write_count;
-    char *buffer;
+/**
+ * create_file - Create a file and write text content to it.
+ * @filename: The name of the file to create.
+ * @text_content: A NULL-terminated string to write to the file.
+ *
+ * Return: 1 on success, -1 on failure.
+ */
+int create_file(const char *filename, char *text_content) {
+    int fd, write_result;
+    mode_t mode = S_IRUSR | S_IWUSR; /* Permissions: rw------- */
 
     if (filename == NULL)
-        return (0);
+        return (-1);
 
-    buffer = malloc(sizeof(char) * letters);
-    if (buffer == NULL)
-        return (0);
+    fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, mode);
 
-    fd = open(filename, O_RDONLY);
-    if (fd == -1) {
-        free(buffer);
-        return (0);
-    }
+    if (fd == -1)
+        return (-1);
 
-    read_count = read(fd, buffer, letters);
-    if (read_count == -1) {
-        free(buffer);
-        close(fd);
-        return (0);
+    if (text_content != NULL) {
+        write_result = write(fd, text_content, strlen(text_content));
+        if (write_result == -1) {
+            close(fd);
+            return (-1);
+        }
     }
 
     close(fd);
-
-    write_count = write(STDOUT_FILENO, buffer, read_count);
-    if (write_count == -1 || write_count != read_count) {
-        free(buffer);
-        return (0);
-    }
-
-    free(buffer);
-    return (write_count);
+    return (1);
 }
