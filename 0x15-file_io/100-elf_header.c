@@ -7,13 +7,21 @@
 #include <string.h>
 #include <errno.h>
 
+/**
+ * ELF Header Information Retrieval Program
+ *
+ * This program reads and displays information from the ELF header of an ELF file.
+ * It displays information such as the ELF magic number, class, data format, version,
+ * OS/ABI, ABI version, file type, and entry point address.
+ */
+
 void print_error(const char *message) {
     fprintf(stderr, "Error: %s\n", message);
     exit(98);
 }
 
 void print_elf_header_info(Elf64_Ehdr *header) {
-    int i;
+    unsigned int i;
 
     printf("Magic:   ");
     for (i = 0; i < EI_NIDENT; i++) {
@@ -28,7 +36,7 @@ void print_elf_header_info(Elf64_Ehdr *header) {
     printf("ABI Version:                       %d\n", header->e_ident[EI_ABIVERSION]);
 
     printf("Type:                              %d\n", header->e_type);
-    printf("Entry point address:               0x%lx\n", header->e_entry);
+    printf("Entry point address:               0x%lx\n", (unsigned long)header->e_entry);
 }
 
 int main(int argc, char *argv[]) {
