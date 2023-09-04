@@ -1,35 +1,47 @@
-#include <fcntl.h>
-#include <unistd.h>
+#include "main.h"
 #include <stdlib.h>
-#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 /**
- * create_file - Create a file and write text content to it.
- * @filename: The name of the file to create.
- * @text_content: A NULL-terminated string to write to the file.
+ * read_textfile - Read a text file and print it to STDOUT.
+ * @filename: The text file to be read.
+ * @letters: The number of letters to read and print.
  *
- * Return: 1 on success, -1 on failure.
+ * Return: The actual number of bytes read and printed, or 0 on failure.
  */
-int create_file(const char *filename, char *text_content) {
-    int fd, write_result;
-    mode_t mode = S_IRUSR | S_IWUSR; /* Permissions: rw------- */
+ssize_t read_textfile(const char *filename, size_t letters) {
+    char *buf;
+    ssize_t fd, t, w;
 
     if (filename == NULL)
-        return (-1);
+        return (0);
 
-    fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, mode);
-
+    fd = open(filename, O_RDONLY);
     if (fd == -1)
-        return (-1);
+        return (0);
 
-    if (text_content != NULL) {
-        write_result = write(fd, text_content, strlen(text_content));
-        if (write_result == -1) {
-            close(fd);
-            return (-1);
-        }
+    buf = malloc(sizeof(char) * letters);
+    if (buf == NULL) {
+        close(fd);
+        return (0);
     }
 
+    t = read(fd, buf, letters);
+    if (t == -1) {
+        free(buf);
+        close(fd);
+        return (0);
+    }
+
+    w = write(STDOUT_FILENO, buf, t);
+    if (w == -1 || (size_t)w != (size_t)t) {
+        free(buf);
+        close(fd);
+        return (0);
+    }
+
+    free(buf);
     close(fd);
-    return (1);
+    return (w);
 }
